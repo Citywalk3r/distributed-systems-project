@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
@@ -73,3 +75,25 @@ class ModelTests(TestCase):
             price=12.00
         )
         self.assertEqual(str(recipe), recipe.title)
+
+    # uuid4 is a function inside the uuid module
+    # that generates a unique uuid version 4
+    @patch('uuid.uuid4')
+    def test_recipe_filename_uuid(self, mock_uuid):
+        """Test that image is saved in the correct location"""
+        uuid = 'test-uuid'
+        mock_uuid.return_value = uuid
+
+        # recipe_image_file_paths accepts 2 parameters
+        # first one is the instance which is required
+        # by django for the upload_to argument
+        # second one is the file name of the original file that
+        # is added.
+        # The reason we pass the second param is that we want to keep
+        # the file extension as it is but we are going to replace the
+        # first part 'myimage' with the uuid
+        file_path = models.recipe_image_file_path(None, 'myimage.jpg')
+
+        # f string, can have variables
+        exp_path = f'uploads/recipe/{uuid}.jpg'
+        self.assertEqual(file_path, exp_path)

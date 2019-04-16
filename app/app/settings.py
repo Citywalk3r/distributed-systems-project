@@ -129,6 +129,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+
+# Where to store the media files
+MEDIA_ROOT = '/vol/web/media/'
+
+# Where to store the static files
+STATIC_ROOT = '/vol/web/static/'
+
+# When collectstatic is run, django collects all
+# static files from any dependency that we have
+# in the projects and stores them in the STATIC_ROOT
 
 # Makes Our App use the custom User model defined in core.
 AUTH_USER_MODEL = 'core.User'

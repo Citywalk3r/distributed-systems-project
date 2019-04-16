@@ -1,9 +1,23 @@
+import uuid
+import os
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
                                         PermissionsMixin
 
 # this is the recommended way for retrieving settings
 from django.conf import settings
+
+
+def recipe_image_file_path(instance, filename):
+    """Generate file path for new image"""
+    # Returns the last item after the split, the extension in our case
+    ext = filename.split('.')[-1]
+    filename = f'{uuid.uuid4()}.{ext}'
+
+    # helper function that allows us to reliably join
+    # 2 strings together to create a valid path
+    return os.path.join('uploads/recipe', filename)
 
 
 class UserManager(BaseUserManager):
@@ -91,6 +105,7 @@ class Recipe(models.Model):
     link = models.CharField(max_length=255, blank=True)
     ingredients = models.ManyToManyField('Ingredient')
     tags = models.ManyToManyField('Tag')
+    image = models.ImageField(null=True, upload_to=recipe_image_file_path)
 
     # define the string representation of the model
     def __str__(self):
